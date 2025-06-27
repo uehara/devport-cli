@@ -26,7 +26,7 @@ npm install -g devport-cli
 ### Local development
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/devport-cli.git
+git clone https://github.com/uehara/devport-cli.git
 cd devport-cli
 npm install
 npm link
