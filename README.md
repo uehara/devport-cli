@@ -173,6 +173,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 When users are developing projects and need port management, use the `devport` CLI tool:
 
 ### Essential Commands:
+
 - `devport suggest` - Get available port suggestion before starting new projects
 - `devport add <port> <project-name> --description "<desc>"` - Register port usage
 - `devport list` - Show all registered ports to avoid conflicts
@@ -180,12 +181,14 @@ When users are developing projects and need port management, use the `devport` C
 - `devport remove <port>` - Clean up when project ends
 
 ### AI Workflow Integration:
+
 1. **Before starting any development server**: Run `devport suggest` to get available port
 2. **When creating projects**: Always register the port with `devport add`
 3. **When port conflicts occur**: Use `devport list` and `devport find` to troubleshoot
 4. **In automation scripts**: Use `AVAILABLE_PORT=$(devport suggest)` for dynamic port allocation
 
 ### Best Practices for AI:
+
 - Always check port availability before suggesting specific ports to users
 - Register ports immediately when setting up development environments
 - Include port cleanup in project completion instructions
@@ -194,4 +197,3 @@ When users are developing projects and need port management, use the `devport` C
 ## Support
 
 If you encounter any problems or have suggestions, please [open an issue](https://github.com/uehara/devport-cli/issues) on GitHub.
-# devport-cli
