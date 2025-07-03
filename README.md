@@ -14,6 +14,8 @@ When working on multiple development projects, port conflicts are a common issue
 - 💡 **Smart port suggestions**: Get suggestions for available ports
 - 🗑️ **Easy removal**: Remove port registrations when projects are no longer active
 - 🏠 **Local storage**: All data stored locally in your home directory
+- 🔍 **Active port monitoring**: View all currently active ports and their processes
+- ⚡ **Process management**: Kill processes using specific ports
 
 ## Installation
 
@@ -76,6 +78,18 @@ devport rm 3000
 devport clear
 ```
 
+### View active ports and processes
+
+```bash
+devport active
+```
+
+### Kill process using a specific port
+
+```bash
+devport kill 3000
+```
+
 ### View help
 
 ```bash
@@ -93,6 +107,8 @@ devport <command> --help
 | `find <port>`          | -     | Find information about a specific port |
 | `suggest`              | -     | Suggest an available port              |
 | `clear`                | -     | Clear all port registrations           |
+| `active`               | -     | Show all active ports and processes    |
+| `kill <port>`          | -     | Kill process using the specified port  |
 
 ## Options
 
@@ -149,6 +165,19 @@ devport remove 3000
 devport clear
 ```
 
+### Process Management
+
+```bash
+# Check what processes are using ports
+devport active
+
+# Kill stuck development server
+devport kill 3000
+
+# Check if port is now free
+devport find 3000
+```
+
 ## Requirements
 
 - Node.js 14.0.0 or higher
@@ -179,6 +208,8 @@ When users are developing projects and need port management, use the `devport` C
 - `devport list` - Show all registered ports to avoid conflicts
 - `devport find <port>` - Check what's using a specific port
 - `devport remove <port>` - Clean up when project ends
+- `devport active` - Show all active ports and running processes
+- `devport kill <port>` - Kill process using a specific port
 
 ### AI Workflow Integration:
 

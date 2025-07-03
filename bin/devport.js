@@ -133,6 +133,51 @@ program
     }
   });
 
+program
+  .command('active')
+  .description('Show all active ports and their processes')
+  .action(() => {
+    const activePorts = portManager.getActivePorts();
+    
+    if (activePorts.length === 0) {
+      console.log(chalk.yellow('No active ports found.'));
+      return;
+    }
+
+    console.log(chalk.bold('\nActive Ports:\n'));
+    console.log(chalk.dim('Port  | Process ID | Process Name        | Command'));
+    console.log(chalk.dim('------|------------|--------------------|-----------------'));
+    
+    activePorts.forEach(({ port, pid, processName, command }) => {
+      const portStr = chalk.cyan(port.toString().padEnd(5));
+      const pidStr = chalk.white(pid.toString().padEnd(10));
+      const processStr = chalk.white(processName.padEnd(19));
+      const cmdStr = chalk.dim(command || '');
+      console.log(`${portStr} | ${pidStr} | ${processStr} | ${cmdStr}`);
+    });
+    
+    console.log(chalk.dim(`\nTotal: ${activePorts.length} active port(s)\n`));
+  });
+
+program
+  .command('kill <port>')
+  .description('Kill the process using the specified port')
+  .action((port) => {
+    const portNum = parseInt(port);
+    if (isNaN(portNum)) {
+      console.error(chalk.red('Error: Port must be a number'));
+      process.exit(1);
+    }
+
+    const result = portManager.killProcess(portNum);
+    
+    if (result.success) {
+      console.log(chalk.green('✓ ' + result.message));
+    } else {
+      console.error(chalk.red('✗ ' + result.message));
+    }
+  });
+
 program.parse();
 
 if (!process.argv.slice(2).length) {
