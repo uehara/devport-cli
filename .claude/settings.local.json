@@ -4,7 +4,10 @@
       "Bash(mkdir:*)",
       "Bash(npm run lint)",
       "Bash(npm test)",
-      "Bash(npm:*)"
+      "Bash(npm:*)",
+      "Bash(chmod:*)",
+      "Bash(ls:*)",
+      "Bash(/Users/sasakikanta/.asdf/installs/nodejs/23.8.0/bin/devport)"
     ],
     "deny": []
   }
