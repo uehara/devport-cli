@@ -10,7 +10,7 @@ const portManager = new PortManager();
 program
   .name('devport')
   .description('CLI tool for managing development server ports')
-  .version('1.2.0');
+  .version('1.3.0');
 
 program
   .command('add <port> <project>')
@@ -201,6 +201,88 @@ program
         });
       }
       process.exit(1);
+    }
+  });
+
+program
+  .command('scan [directory]')
+  .description('Scan directory for projects and auto-detect ports')
+  .option('-d, --depth <levels>', 'Maximum directory depth to scan', '3')
+  .option('--all', 'Include low-confidence matches')
+  .option('--dry-run', 'Show what would be registered without actually registering')
+  .action((directory, options) => {
+    const scanDir = directory || process.cwd();
+    const maxDepth = parseInt(options.depth);
+
+    if (isNaN(maxDepth) || maxDepth < 1) {
+      console.error(chalk.red('Error: Depth must be a positive number'));
+      process.exit(1);
+    }
+
+    console.log(chalk.dim(`Scanning ${scanDir} (max depth: ${maxDepth})...\n`));
+
+    if (options.dryRun) {
+      // Dry run - just show what would be found
+      const scannedPorts = portManager.scanDirectory(scanDir, maxDepth);
+
+      if (scannedPorts.length === 0) {
+        console.log(chalk.yellow('No ports found in the specified directory.'));
+        return;
+      }
+
+      console.log(chalk.bold('Found ports:\n'));
+      console.log(chalk.dim('Port  | Project              | Confidence | Files'));
+      console.log(chalk.dim('------|----------------------|------------|------------------'));
+
+      scannedPorts.forEach(({ port, projects, files, confidence }) => {
+        const portStr = chalk.cyan(port.toString().padEnd(5));
+        const projectStr = chalk.white(projects[0].padEnd(20));
+        const confStr = confidence === 'high' ? chalk.green(confidence.padEnd(10)) : chalk.yellow(confidence.padEnd(10));
+        const fileStr = chalk.dim(files[0]);
+        console.log(`${portStr} | ${projectStr} | ${confStr} | ${fileStr}`);
+      });
+
+      console.log(chalk.dim(`\nTotal: ${scannedPorts.length} port(s) found`));
+      console.log(chalk.dim('Run without --dry-run to register these ports'));
+    } else {
+      // Actually register the ports
+      const results = portManager.autoRegister(scanDir, maxDepth, {
+        includeAll: options.all
+      });
+
+      // Show added ports
+      if (results.added.length > 0) {
+        console.log(chalk.green(`✓ Added ${results.added.length} port(s):\n`));
+        results.added.forEach(({ port, projectName, files, confidence }) => {
+          console.log(chalk.green(`  Port ${port}: ${projectName}`));
+          console.log(chalk.dim(`    From: ${files[0]} (${confidence} confidence)`));
+        });
+        console.log();
+      }
+
+      // Show skipped ports
+      if (results.skipped.length > 0) {
+        console.log(chalk.yellow(`⊘ Skipped ${results.skipped.length} port(s):\n`));
+        results.skipped.forEach(({ port, projectName, reason }) => {
+          console.log(chalk.yellow(`  Port ${port}: ${projectName}`));
+          console.log(chalk.dim(`    Reason: ${reason}`));
+        });
+        console.log();
+      }
+
+      // Show failed ports
+      if (results.failed.length > 0) {
+        console.log(chalk.red(`✗ Failed ${results.failed.length} port(s):\n`));
+        results.failed.forEach(({ port, projectName, reason }) => {
+          console.log(chalk.red(`  Port ${port}: ${projectName}`));
+          console.log(chalk.dim(`    Reason: ${reason}`));
+        });
+        console.log();
+      }
+
+      if (results.added.length === 0 && results.skipped.length === 0 && results.failed.length === 0) {
+        console.log(chalk.yellow('No ports found in the specified directory.'));
+      }
     }
   });
 

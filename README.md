@@ -62,6 +62,32 @@ devport suggest
 devport suggest --start 4000
 ```
 
+### Scan directory and auto-register ports
+
+```bash
+# Scan current directory
+devport scan
+
+# Scan specific directory
+devport scan ~/projects
+
+# Scan with custom depth (default: 3)
+devport scan ~/projects --depth 5
+
+# Preview what would be registered (dry run)
+devport scan ~/projects --dry-run
+
+# Include low-confidence matches
+devport scan ~/projects --all
+```
+
+This command automatically scans your project directories and detects ports from:
+- package.json scripts (Next.js, Vite, React, etc.)
+- .env files
+- Configuration files (vite.config.js, next.config.js, etc.)
+- Docker compose files
+- Server files (server.js, app.js, etc.)
+
 ### Remove a port registration
 
 ```bash
@@ -116,6 +142,7 @@ devport <command> --help
 | `list`                  | `ls`  | List all registered ports                           |
 | `find <port>`           | -     | Find information about a specific port              |
 | `suggest`               | -     | Suggest an available port                           |
+| `scan [directory]`      | -     | Scan directory and auto-detect/register ports       |
 | `kill <port>`           | -     | Kill the process using the specified port           |
 | `kill-project <name>`   | -     | Kill all processes for the specified project        |
 | `kill-all`              | -     | Kill all processes for all registered ports         |
@@ -131,6 +158,12 @@ devport <command> --help
 
 - `-s, --start <port>`: Starting port number for suggestions (default: 3000)
 
+### scan command
+
+- `-d, --depth <levels>`: Maximum directory depth to scan (default: 3)
+- `--all`: Include low-confidence port matches
+- `--dry-run`: Preview what would be registered without actually registering
+
 ## Data Storage
 
 DevPort CLI stores all port registrations locally in:
@@ -143,6 +176,9 @@ DevPort CLI stores all port registrations locally in:
 ### Daily Development
 
 ```bash
+# Auto-detect ports in your projects directory
+devport scan ~/projects
+
 # Starting a new React project
 devport add 3000 my-new-app --description "React development server"
 
@@ -210,6 +246,7 @@ When users are developing projects and need port management, use the `devport` C
 
 ### Essential Commands:
 
+- `devport scan <directory>` - Auto-detect and register ports from project files
 - `devport suggest` - Get available port suggestion before starting new projects
 - `devport add <port> <project-name> --description "<desc>"` - Register port usage
 - `devport list` - Show all registered ports to avoid conflicts
@@ -221,10 +258,11 @@ When users are developing projects and need port management, use the `devport` C
 
 ### AI Workflow Integration:
 
-1. **Before starting any development server**: Run `devport suggest` to get available port
-2. **When creating projects**: Always register the port with `devport add`
-3. **When port conflicts occur**: Use `devport list` and `devport find` to troubleshoot, or `devport kill` to terminate stuck processes
-4. **In automation scripts**: Use `AVAILABLE_PORT=$(devport suggest)` for dynamic port allocation
+1. **When working with existing projects**: Run `devport scan <directory>` to auto-detect all ports
+2. **Before starting any development server**: Run `devport suggest` to get available port
+3. **When creating projects**: Always register the port with `devport add`
+4. **When port conflicts occur**: Use `devport list` and `devport find` to troubleshoot, or `devport kill` to terminate stuck processes
+5. **In automation scripts**: Use `AVAILABLE_PORT=$(devport suggest)` for dynamic port allocation
 
 ### Best Practices for AI:
 
