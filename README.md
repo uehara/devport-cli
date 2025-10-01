@@ -70,6 +70,14 @@ devport remove 3000
 devport rm 3000
 ```
 
+### Kill a process using a specific port
+
+```bash
+devport kill 3000
+```
+
+This command will find and terminate the process that is currently using the specified port. This is useful when you have a stuck development server or process that didn't shut down properly.
+
 ### Clear all registrations
 
 ```bash
@@ -85,14 +93,15 @@ devport <command> --help
 
 ## Commands
 
-| Command                | Alias | Description                            |
-| ---------------------- | ----- | -------------------------------------- |
-| `add <port> <project>` | -     | Register a port for a project          |
-| `remove <port>`        | `rm`  | Remove a port registration             |
-| `list`                 | `ls`  | List all registered ports              |
-| `find <port>`          | -     | Find information about a specific port |
-| `suggest`              | -     | Suggest an available port              |
-| `clear`                | -     | Clear all port registrations           |
+| Command                | Alias | Description                                      |
+| ---------------------- | ----- | ------------------------------------------------ |
+| `add <port> <project>` | -     | Register a port for a project                    |
+| `remove <port>`        | `rm`  | Remove a port registration                       |
+| `list`                 | `ls`  | List all registered ports                        |
+| `find <port>`          | -     | Find information about a specific port           |
+| `suggest`              | -     | Suggest an available port                        |
+| `kill <port>`          | -     | Kill the process using the specified port        |
+| `clear`                | -     | Clear all port registrations                     |
 
 ## Options
 
@@ -142,6 +151,9 @@ devport add $AVAILABLE_PORT "ai-generated-project" --description "Auto-generated
 ### Project Cleanup
 
 ```bash
+# Kill stuck React development server
+devport kill 3000
+
 # Remove port when project is done
 devport remove 3000
 
@@ -178,13 +190,14 @@ When users are developing projects and need port management, use the `devport` C
 - `devport add <port> <project-name> --description "<desc>"` - Register port usage
 - `devport list` - Show all registered ports to avoid conflicts
 - `devport find <port>` - Check what's using a specific port
+- `devport kill <port>` - Kill process using the specified port (useful for stuck servers)
 - `devport remove <port>` - Clean up when project ends
 
 ### AI Workflow Integration:
 
 1. **Before starting any development server**: Run `devport suggest` to get available port
 2. **When creating projects**: Always register the port with `devport add`
-3. **When port conflicts occur**: Use `devport list` and `devport find` to troubleshoot
+3. **When port conflicts occur**: Use `devport list` and `devport find` to troubleshoot, or `devport kill` to terminate stuck processes
 4. **In automation scripts**: Use `AVAILABLE_PORT=$(devport suggest)` for dynamic port allocation
 
 ### Best Practices for AI:

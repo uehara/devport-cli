@@ -10,7 +10,7 @@ const portManager = new PortManager();
 program
   .name('devport')
   .description('CLI tool for managing development server ports')
-  .version('1.0.0');
+  .version('1.1.0');
 
 program
   .command('add <port> <project>')
@@ -125,11 +125,31 @@ program
   .description('Clear all port registrations')
   .action(() => {
     const result = portManager.clearAll();
-    
+
     if (result.success) {
       console.log(chalk.green('✓ ' + result.message));
     } else {
       console.error(chalk.red('✗ ' + result.message));
+    }
+  });
+
+program
+  .command('kill <port>')
+  .description('Kill the process using the specified port')
+  .action((port) => {
+    const portNum = parseInt(port);
+    if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+      console.error(chalk.red('Error: Port must be a number between 1 and 65535'));
+      process.exit(1);
+    }
+
+    const result = portManager.killProcess(portNum);
+
+    if (result.success) {
+      console.log(chalk.green('✓ ' + result.message));
+    } else {
+      console.error(chalk.red('✗ ' + result.message));
+      process.exit(1);
     }
   });
 
