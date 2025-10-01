@@ -78,6 +78,22 @@ devport kill 3000
 
 This command will find and terminate the process that is currently using the specified port. This is useful when you have a stuck development server or process that didn't shut down properly.
 
+### Kill all processes for a specific project
+
+```bash
+devport kill-project my-react-app
+```
+
+This command will find and terminate all processes using ports registered to the specified project name.
+
+### Kill all processes for all registered ports
+
+```bash
+devport kill-all
+```
+
+This command will find and terminate all processes using any of your registered ports. Useful for cleaning up all development servers at once.
+
 ### Clear all registrations
 
 ```bash
@@ -93,15 +109,17 @@ devport <command> --help
 
 ## Commands
 
-| Command                | Alias | Description                                      |
-| ---------------------- | ----- | ------------------------------------------------ |
-| `add <port> <project>` | -     | Register a port for a project                    |
-| `remove <port>`        | `rm`  | Remove a port registration                       |
-| `list`                 | `ls`  | List all registered ports                        |
-| `find <port>`          | -     | Find information about a specific port           |
-| `suggest`              | -     | Suggest an available port                        |
-| `kill <port>`          | -     | Kill the process using the specified port        |
-| `clear`                | -     | Clear all port registrations                     |
+| Command                 | Alias | Description                                         |
+| ----------------------- | ----- | --------------------------------------------------- |
+| `add <port> <project>`  | -     | Register a port for a project                       |
+| `remove <port>`         | `rm`  | Remove a port registration                          |
+| `list`                  | `ls`  | List all registered ports                           |
+| `find <port>`           | -     | Find information about a specific port              |
+| `suggest`               | -     | Suggest an available port                           |
+| `kill <port>`           | -     | Kill the process using the specified port           |
+| `kill-project <name>`   | -     | Kill all processes for the specified project        |
+| `kill-all`              | -     | Kill all processes for all registered ports         |
+| `clear`                 | -     | Clear all port registrations                        |
 
 ## Options
 
@@ -151,8 +169,14 @@ devport add $AVAILABLE_PORT "ai-generated-project" --description "Auto-generated
 ### Project Cleanup
 
 ```bash
-# Kill stuck React development server
+# Kill stuck React development server on specific port
 devport kill 3000
+
+# Kill all processes for a specific project
+devport kill-project my-react-app
+
+# Kill all registered development servers at once
+devport kill-all
 
 # Remove port when project is done
 devport remove 3000
@@ -191,6 +215,8 @@ When users are developing projects and need port management, use the `devport` C
 - `devport list` - Show all registered ports to avoid conflicts
 - `devport find <port>` - Check what's using a specific port
 - `devport kill <port>` - Kill process using the specified port (useful for stuck servers)
+- `devport kill-project <name>` - Kill all processes for a specific project
+- `devport kill-all` - Kill all processes for all registered ports
 - `devport remove <port>` - Clean up when project ends
 
 ### AI Workflow Integration:

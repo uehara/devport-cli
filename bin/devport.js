@@ -10,7 +10,7 @@ const portManager = new PortManager();
 program
   .name('devport')
   .description('CLI tool for managing development server ports')
-  .version('1.1.0');
+  .version('1.2.0');
 
 program
   .command('add <port> <project>')
@@ -149,6 +149,57 @@ program
       console.log(chalk.green('✓ ' + result.message));
     } else {
       console.error(chalk.red('✗ ' + result.message));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('kill-project <project>')
+  .description('Kill all processes for the specified project')
+  .action((project) => {
+    const result = portManager.killByProject(project);
+
+    if (result.success) {
+      console.log(chalk.green('✓ ' + result.message));
+      if (result.details) {
+        result.details.forEach(({ port, result: portResult }) => {
+          if (portResult.success) {
+            console.log(chalk.dim(`  Port ${port}: ${portResult.message}`));
+          } else {
+            console.log(chalk.yellow(`  Port ${port}: ${portResult.message}`));
+          }
+        });
+      }
+    } else {
+      console.error(chalk.red('✗ ' + result.message));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('kill-all')
+  .description('Kill all processes for all registered ports')
+  .action(() => {
+    const result = portManager.killAll();
+
+    if (result.success) {
+      console.log(chalk.green('✓ ' + result.message));
+      if (result.details) {
+        result.details.forEach(({ port, project, result: portResult }) => {
+          if (portResult.success) {
+            console.log(chalk.dim(`  Port ${port} (${project}): ${portResult.message}`));
+          } else {
+            console.log(chalk.yellow(`  Port ${port} (${project}): ${portResult.message}`));
+          }
+        });
+      }
+    } else {
+      console.error(chalk.red('✗ ' + result.message));
+      if (result.details) {
+        result.details.forEach(({ port, project, result: portResult }) => {
+          console.log(chalk.yellow(`  Port ${port} (${project}): ${portResult.message}`));
+        });
+      }
       process.exit(1);
     }
   });
